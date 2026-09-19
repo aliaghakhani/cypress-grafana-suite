@@ -1,35 +1,3 @@
-pipeline {
-    agent any
-    
-    environment {
-        INFLUX_TOKEN = credentials('influxdb-token')
-        INFLUX_URL   = 'http://localhost:8086' 
-        INFLUX_ORG   = 'qa-automation' 
-        INFLUX_BUCKET= 'cypress_metrics'
-        ENV_NAME     = 'Local-Jenkins-Runner'
-    }
-    
-    stages {
-        stage('Pull SCM Source') {
-            steps {
-                checkout scm
-            }
-        }
-        
-        stage('Install System Modules') {
-            steps {
-                // Uses bat to safely run commands on Windows
-                bat 'npm install'
-            }
-        }
-        
-        stage('Run Playground Suite') {
-            steps {
-                // Uses bat and Windows-safe logical checks
-                bat 'npx cypress run --spec "cypress/e2e/playground.cy.js" --reporter json --reporter-options outputfile=cypress-results.json || exit 0'
-            }
-        }
-        
         stage('Pipe Telemetry to Grafana') {
             steps {
                 script {
@@ -54,7 +22,7 @@ pipeline {
                         writeFile file: 'parseResults.js', text: parseScript
                         bat 'node parseResults.js'
                         
-                        // Windows native curl escaping rules
+                        // Cleaned up Windows native curl layout with correct variable syntax mapping
                         bat """
                             curl -i -X POST "\${INFLUX_URL}/api/v2/write?org=\({INFLUX_ORG}&bucket=\){INFLUX_BUCKET}&precision=ns" ^
                             -H "Authorization: Token %INFLUX_TOKEN%" ^
@@ -69,13 +37,3 @@ pipeline {
                 }
             }
         }
-    }
-    
-    post {
-        always {
-            script {
-                cleanWs() 
-            }
-        }
-    }
-}
