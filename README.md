@@ -2,14 +2,51 @@
 
 Enterprise QA Observability framework integrating Cypress E2E testing with local Jenkins CI/CD pipelines and real-time InfluxDB + Grafana time-series telemetry.
 
-[![Cypress Code Engine](https://shields.io)](https://cypress.io)
-[![CI/CD Automation](https://shields.io)](https://jenkins.io)
-[![Telemetry DB](https://shields.io)](https://influxdata.com)
-[![Analytics Hub](https://shields.io)](https://grafana.com)
+---
+
+## 💻 Tech Stack & Deployment Infrastructure
+
+<div align="center">
+  <table border="0" cellpadding="10" cellspacing="0">
+    <tr>
+      <!-- Cypress Card -->
+      <td width="200" align="center" valign="top" style="background-color: #1a1a1a; border: 1px solid #00bf8f; border-radius: 8px; padding: 15px;">
+        <a href="https://cypress.io" target="_blank" style="text-decoration: none; color: #ffffff;">
+          <b style="font-size: 16px; color: #00bf8f;">🖥️ Cypress Engine</b><br>
+          <small style="color: #cccccc; font-size: 11px; display: block; margin-top: 5px;">Headless E2E Browser Testing Core</small>
+        </a>
+      </td>
+      <td width="10"></td>
+      <!-- Jenkins Card -->
+      <td width="200" align="center" valign="top" style="background-color: #1a1a1a; border: 1px solid #d24939; border-radius: 8px; padding: 15px;">
+        <a href="https://jenkins.io" target="_blank" style="text-decoration: none; color: #ffffff;">
+          <b style="font-size: 16px; color: #d24939;">⚙️ Jenkins CI/CD</b><br>
+          <small style="color: #cccccc; font-size: 11px; display: block; margin-top: 5px;">Automation Build Pipeline Engine</small>
+        </a>
+      </td>
+      <td width="10"></td>
+      <!-- InfluxDB Card -->
+      <td width="200" align="center" valign="top" style="background-color: #1a1a1a; border: 1px solid #22adcb; border-radius: 8px; padding: 15px;">
+        <a href="https://influxdata.com" target="_blank" style="text-decoration: none; color: #ffffff;">
+          <b style="font-size: 16px; color: #22adcb;">🗄️ InfluxDB 2.7</b><br>
+          <small style="color: #cccccc; font-size: 11px; display: block; margin-top: 5px;">Time-Series Log Analytics DB</small>
+        </a>
+      </td>
+      <td width="10"></td>
+      <!-- Grafana Card -->
+      <td width="200" align="center" valign="top" style="background-color: #1a1a1a; border: 1px solid #f46800; border-radius: 8px; padding: 15px;">
+        <a href="https://grafana.com" target="_blank" style="text-decoration: none; color: #ffffff;">
+          <b style="font-size: 16px; color: #f46800;">📈 Grafana Hub</b><br>
+          <small style="color: #cccccc; font-size: 11px; display: block; margin-top: 5px;">Real-Time Exec Dashboard Visuals</small>
+        </a>
+      </td>
+    </tr>
+  </table>
+</div>
 
 ---
 
-##  Architectural Topology
+## 🏗️ Architectural Topology
 
 ```plaintext
                    [ Local Machine Workspace ]
