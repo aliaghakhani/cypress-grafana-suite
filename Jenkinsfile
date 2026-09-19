@@ -2,10 +2,7 @@ pipeline {
     agent any
     
     environment {
-        // Securely injects the Influx token from your Jenkins Credentials Manager
         INFLUX_TOKEN = credentials('influxdb-token')
-        
-        // Target parameters mapped directly to your local Docker network
         INFLUX_URL   = 'http://localhost:8086' 
         INFLUX_ORG   = 'qa-automation' 
         INFLUX_BUCKET= 'cypress_metrics'
@@ -21,14 +18,15 @@ pipeline {
         
         stage('Install System Modules') {
             steps {
-                sh 'npm install'
+                // Uses bat to safely run commands on Windows
+                bat 'npm install'
             }
         }
         
         stage('Run Playground Suite') {
             steps {
-                // Runs tests in a headless browser and outputs performance statistics to JSON
-                sh 'npx cypress run --spec "cypress/e2e/playground.cy.js" --reporter json --reporter-options outputfile=cypress-results.json || true'
+                // Uses bat and Windows-safe logical checks
+                bat 'npx cypress run --spec "cypress/e2e/playground.cy.js" --reporter json --reporter-options outputfile=cypress-results.json || exit 0'
             }
         }
         
@@ -37,7 +35,6 @@ pipeline {
                 script {
                     if (fileExists('cypress-results.json')) {
                         
-                        // Parse JSON run variables and structure them into time-series Line Protocol
                         def parseScript = '''
                         const fs = require('fs');
                         try {
@@ -48,27 +45,26 @@ pipeline {
                             const lineData = `ui_playground,env=${process.env.ENV_NAME} total=${stats.tests || 0},passed=${stats.passes || 0},failed=${stats.failures || 0},duration_ms=${stats.duration || 0} ${timestampNs}`;
                             
                             fs.writeFileSync('influx-payload.txt', lineData);
-                            console.log('Metrics successfully structured.');
+                            console.log('Metrics structured.');
                         } catch (err) {
-                            console.error('Data parsing failed:', err);
                             process.exit(1);
                         }
                         '''
                         
                         writeFile file: 'parseResults.js', text: parseScript
-                        sh 'node parseResults.js'
+                        bat 'node parseResults.js'
                         
-                        // Push telemetry directly to the open source API database endpoint running in Docker
-                        sh '''
-                            curl -i -X POST "\${INFLUX_URL}/api/v2/write?org=\${INFLUX_ORG}&bucket=\${INFLUX_BUCKET}&precision=ns" \
-                            -H "Authorization: Token \${INFLUX_TOKEN}" \
-                            -H "Content-Type: text/plain; charset=utf-8" \
+                        // Windows native curl escaping rules
+                        bat """
+                            curl -i -X POST "\${INFLUX_URL}/api/v2/write?org=\({INFLUX_ORG}&bucket=\){INFLUX_BUCKET}&precision=ns" ^
+                            -H "Authorization: Token %INFLUX_TOKEN%" ^
+                            -H "Content-Type: text/plain; charset=utf-8" ^
                             --data-binary @influx-payload.txt
-                        '''
+                        """
                         
-                        echo "Live metrics successfully synced to local dashboard engine!"
+                        echo "Telemetry successfully synced!"
                     } else {
-                        error "Telemetry step aborted: execution logs missing."
+                        error "Execution logs missing."
                     }
                 }
             }
@@ -77,7 +73,9 @@ pipeline {
     
     post {
         always {
-            cleanWs() 
+            script {
+                cleanWs() 
+            }
         }
     }
 }
