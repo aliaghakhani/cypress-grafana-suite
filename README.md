@@ -2,14 +2,14 @@
 
 Enterprise QA Observability framework integrating Cypress E2E testing with local Jenkins CI/CD pipelines and real-time InfluxDB + Grafana time-series telemetry.
 
-[![Cypress Code Engine](https://shields.io)](https://cypress.io)
-[![CI/CD Automation](https://shields.io)](https://jenkins.io)
-[![Telemetry DB](https://shields.io)](https://influxdata.com)
-[![Analytics Hub](https://shields.io)](https://grafana.com)
+![Cypress Code Engine](https://shields.io)
+![CI/CD Automation](https://shields.io)
+![Telemetry DB](https://shields.io)
+![Analytics Hub](https://shields.io)
 
 ---
 
-## 🏗️ Architectural Topology
+##  Architectural Topology
 
 ```plaintext
                    [ Local Machine Workspace ]
@@ -42,7 +42,6 @@ Enterprise QA Observability framework integrating Cypress E2E testing with local
         └──────────────────────────────────────────────┘
 ```
 
-## 🔥 Senior Engineering Design Principles
 
 * **QA Infrastructure as Code:** The entire data warehousing backend (InfluxDB) and metrics dashboard interface engine (Grafana) are fully containerized and declared inline inside a clean `docker-compose.yml` file, allowing one-click localized environment setups.
 * **Time-Series Telemetry Analysis:** Converts flat execution characteristics into multi-dimensional time-series metrics. Tracks runtime duration anomalies (`duration_ms`), build velocity trends, regression indexes, and network bottlenecks across subsequent code drops.
@@ -67,7 +66,7 @@ Enterprise QA Observability framework integrating Cypress E2E testing with local
 
 ---
 
-## 🚀 Execution & Verification Guide
+##  Execution & Verification Guide
 
 ### 1. Boot the Observability Datacenter
 Initialize your global background tracking containers via terminal:
