@@ -22,13 +22,19 @@
                         writeFile file: 'parseResults.js', text: parseScript
                         bat 'node parseResults.js'
                         
-                        // Cleaned up Windows native curl layout with correct variable syntax mapping
-                        bat """
-                            curl -i -X POST "\${INFLUX_URL}/api/v2/write?org=\({INFLUX_ORG}&bucket=\){INFLUX_BUCKET}&precision=ns" ^
-                            -H "Authorization: Token %INFLUX_TOKEN%" ^
-                            -H "Content-Type: text/plain; charset=utf-8" ^
-                            --data-binary @influx-payload.txt
-                        """
+                        // Clean, isolated environment block that protects variables from compiler errors
+                        withEnv([
+                            "URL=\${INFLUX_URL}",
+                            "ORG=\${INFLUX_ORG}",
+                            "BUCKET=\${INFLUX_BUCKET}"
+                        ]) {
+                            bat """
+                                curl -i -X POST "%URL%/api/v2/write?org=%ORG%&bucket=%BUCKET%&precision=ns" ^
+                                -H "Authorization: Token %INFLUX_TOKEN%" ^
+                                -H "Content-Type: text/plain; charset=utf-8" ^
+                                --data-binary @influx-payload.txt
+                            """
+                        }
                         
                         echo "Telemetry successfully synced!"
                     } else {
