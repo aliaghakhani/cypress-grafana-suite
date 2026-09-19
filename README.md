@@ -9,7 +9,7 @@ Enterprise QA Observability framework integrating Cypress E2E testing with local
 
 ---
 
-## 🏗️ Architectural Topology
+##  Architectural Topology
 
 ```plaintext
                    [ Local Machine Workspace ]
